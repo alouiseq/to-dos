@@ -1,0 +1,6 @@
+To Dos App
+
+Simple list of todos that creates entries for either daily tasks and/or projects. Entries can be added, deleted, updated, sorted in a table or list.
+
+Languages/Technology:
+HTML, CSS, node.js, express.js, Javascript, jQuery, knockout.js, mongodb, Linux, require.js
