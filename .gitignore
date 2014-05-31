@@ -1,3 +1,5 @@
 *.swp
 .git
+node_modules
+public/components/*
 
