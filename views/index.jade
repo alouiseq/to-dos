@@ -10,7 +10,7 @@ block prepend content
       span(data-bind="visible: table.daily_entries().length > 0, text: '(' + table.daily_entries().length  + ')'")
     input(id="entry_daily", class="form-control", data-bind="value: entry_daily, event: { keyup: addCell.bind($data, 'daily') }, enable: table.daily_entries().length < '20'", autofocus, value, placeholder="What's there to do?")
     table(class="table table-hover")
-      tbody(data-bind="foreach: { data: table.daily_entries, afterAdd: addSlideDown, beforeRemove: removeSlideUp }")
+      tbody(data-bind="foreach: { data: table.daily_entries, afterAdd: addSlideDown, beforeRemove: removeSlideUp }, sortableTable: table.daily_entries, term: 'daily'")
         tr
           td
             div(class="glyphicon glyphicon-ok", data-bind="click: $parent.toggleStatus")
@@ -25,7 +25,7 @@ block prepend content
       span(data-bind="visible: table.project_entries().length > 0, text: '(' + table.project_entries().length + ')'")
     input(id="entry_proj", class="form-control", data-bind="value: entry_project, event: { keyup: addCell.bind($data, 'project') }, enable: table.project_entries().length < '10'", autofocus, value, placeholder="What project do you have in mind?")
     table(class="table table-hover")
-      tbody(data-bind="foreach: { data: table.project_entries, afterAdd: addSlideDown, beforeRemove: removeSlideUp }")
+      tbody(data-bind="foreach: { data: table.project_entries, afterAdd: addSlideDown, beforeRemove: removeSlideUp }, sortableTable: table.project_entries, term: 'project'")
         td
           div(class="glyphicon glyphicon-ok", data-bind="click: $parent.toggleStatus")
         td

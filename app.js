@@ -3,13 +3,13 @@
  * Module dependencies.
  */
 
-var express = require('express')
-  , http = require('http')
-  , path = require('path');
+var express = require('express'),
+    http = require('http'),
+    path = require('path');
 
 // Load Database
-var mongo = require('mongoskin')
-  , db = mongo.db('mongodb://localhost:27017/todos', {native_parser:true});
+var mongo = require('mongoskin'),
+    db = mongo.db('mongodb://localhost:27017/todos', {native_parser:true});
 
 var app = express();
 module.exports = app;

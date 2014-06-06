@@ -1,6 +1,3 @@
-//var express = require('express');
-//var router = express.Router();
-
 var app = require('../app');
 
 // Get entry list
@@ -14,7 +11,6 @@ app.get('/entrylist', function(req, res) {
 // Add entry to list
 app.post('/addentry', function(req, res) {
     var db = req.db;
-    var check = req.body;
     var json_keys = Object.keys(req.body);
     var parsed_entry = JSON.parse(json_keys[0]);
 
@@ -23,9 +19,70 @@ app.post('/addentry', function(req, res) {
         res.send({msg: ''});
       }
       else {
-        res.send({msg: err});
+        res.send({msg: JSON.stringify(err)});
       }
     });
+});
+
+// Add and update sorted table 
+app.post('/addsorted', function(req, res) {
+  var db = req.db,
+      keys = Object.keys(req.body),
+      parsed_data = JSON.parse(keys[0]),
+      item = parsed_data.item,
+      pos = parsed_data.position + 1,
+      term = parsed_data.term,
+      remainder,
+      condition1 = {},
+      condition2 = {},
+      dir_increment,
+      dbitem_rank;
+
+  // Find sorted/dragged entry's initial rank
+  db.collection('entries').findOne({ _id : item._id }, function(err, result) {
+    dbitem_rank = result.rank;
+    if (term === 'daily') {
+      remainder = 0;   // even numbered ids
+    }
+    else if (term === 'project') {
+      remainder = 1;   // odd numbered ids
+    }
+    else {
+      console.log('term is not recognized...');
+    } 
+
+    if (dbitem_rank < pos) {
+      dir_increment = -1;
+      condition1['$lte'] = pos;   // +1 for 0 based index
+      condition2['$gte'] = dbitem_rank;
+    }
+    else {
+      dir_increment = 1;
+      condition1['$lte'] = dbitem_rank;   // +1 for 0 based index
+      condition2['$gte'] = pos;
+    }
+    if (err) {
+      res.send('finding document: ' + JSON.stringify(err));
+    }
+    // Update all items' ranks after sort
+    db.collection('entries').update({ $and: [{ _id: { $mod: [ 2, remainder ]}}, { rank : condition1 }, { rank : condition2 }]}, { $inc: { rank: dir_increment  }}, { multi : true }, function(err, result) {
+      console.log('term: ' + term);
+      console.log('item_id: ' + item._id);
+      console.log('rank: ' + dbitem_rank);
+      console.log('pos: ' + pos);
+      console.log('direction: ' + dir_increment);
+      if (err) {
+	res.send('ERROR updating all ranks: ' + JSON.stringify(err));
+      }
+      // Update sorted/dragged entry's final rank
+      db.collection('entries').update({ _id : item._id }, { $set: { rank: pos } }, function(err, result) {
+	console.log('UPDATED ENTRY');
+	if (err) {
+	  res.send('updating dragged item rank: ' + JSON.stringify(err));
+	}
+      });
+    });
+  });
 });
 
 // Remove entry from list
@@ -65,4 +122,3 @@ app.get('/updateEntry/:id/:stat', function(req, res) {
   );
 }); 
 
-// module.exports = router;

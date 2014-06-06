@@ -9,16 +9,18 @@ $(document).ready(function() {
 });
 
 // =================== Functions =============================
-function TableRow (counter, entry_type, entry, status) {
+function TableRow (counter, priority, entry_type, entry, status) {
   this._id = counter;
+  this.rank = priority;
   this.term = entry_type;
   this.entry = ko.observable(entry);
   this.status = ko.observable(status);
 }
 
 function TasksViewModel() {
-  var self = this;
-  var counter = 0,
+  var self = this,
+      counter = {daily: 0, project: 1},  // dailies are even and projects are odd
+      priority = {daily: 1, project: 1}, // daily max = 20, project max = 10
       entry = '',
       entries = '',
       newstat = '',
@@ -40,14 +42,22 @@ function TasksViewModel() {
             return item;
           }
       });
-      $.each(entrylist, function(index, dbentry) {
-          var data = new TableRow(dbentry._id, dbentry.term, dbentry.entry, dbentry.status);
+      var sortedlist = entrylist.sort(function(a, b) {
+        if (a.rank < b.rank) {
+	  return -1;
+	}
+        if (a.rank > b.rank) {
+	  return 1;
+	}
+        alert('Rank collision with ' + a.rank + ' and ' + b.rank + '...'
+        + 'Aborting now!');
+      });
+      $.each(sortedlist, function(index, dbentry) {
+          var data = new TableRow(dbentry._id, dbentry.rank, dbentry.term, dbentry.entry, dbentry.status);
           self.table[type + '_entries'].push(data); 
-          if (dbentry._id > counter) {
-	    counter = dbentry._id;
+          if (dbentry._id >= counter[type]) {
+	    counter[type] = dbentry._id + 2;
 	  }
-          else {
-          }
       });
     });
   };
@@ -57,10 +67,11 @@ function TasksViewModel() {
     if(event.which == 13) {   // enter key
       entry = 'entry_' + type;
       entries = type + '_entries';
-      data = new TableRow(++counter, type, mv[entry](), self.status[0]);
+      data = new TableRow(counter[type], priority[type]++, type, mv[entry](), self.status[0]);
+      counter[type] = counter[type] + 2;
       self.table[entries].push(data);
       json_data = ko.toJSON(data);  
-      var parsed = JSON.parse(json_data);
+      //var parsed = JSON.parse(json_data);
       $.post('/addentry', json_data, function(response) {
         if (response.msg !== '') {
           alert('Add Error: ' + response.msg);
@@ -110,4 +121,35 @@ function TasksViewModel() {
         }
     });
   };
+
+  // Sorting entries in a table
+  ko.bindingHandlers.sortableTable = {
+    init: function(element, valueAccessor, allBindings) {
+      $(element).sortable({
+        update: function(event, ui) {
+          var term = allBindings.get('term');
+	  // grab entries from table as observable array
+          var entries = valueAccessor();
+	  // grab item dragged via DOM node from jQuery array object
+          var item_data = ko.dataFor(ui.item[0]);
+	  // new position of item dropped
+	  var pos = ui.item.parent().children().index(ui.item);
+	  // update sorted table
+          entries.remove(item_data);
+	  entries.splice(pos, 0, item_data);
+	  // send the updated table back to the server
+          var data = {item: item_data, position: pos, term: term},
+	      json_data = JSON.stringify(data);
+
+	  $.post('/addsorted', json_data, function(response) {
+	    if(response !== null) {
+	      alert('ERROR post to addsorted: ' + response.msg);
+	    }
+	  });
+	}
+      });
+    }
+  };
+
+  // Edit and update entry
 }
