@@ -16,6 +16,7 @@ block prepend content
             div(class="glyphicon glyphicon-ok", data-bind="click: $parent.toggleStatus")
           td
             div(data-bind="css: status, text: entry")
+              <!-- input(type='text') -->
           td
             div(class="glyphicon glyphicon-remove", data-bind="click: $parent.removeCell.bind($data, 'daily', $parent)")
 
@@ -26,10 +27,13 @@ block prepend content
     input(id="entry_proj", class="form-control", data-bind="value: entry_project, event: { keyup: addCell.bind($data, 'project') }, enable: table.project_entries().length < '10'", autofocus, value, placeholder="What project do you have in mind?")
     table(class="table table-hover")
       tbody(data-bind="foreach: { data: table.project_entries, afterAdd: addSlideDown, beforeRemove: removeSlideUp }, sortableTable: table.project_entries, term: 'project'")
-        td
-          div(class="glyphicon glyphicon-ok", data-bind="click: $parent.toggleStatus")
-        td
-          div(data-bind="css: status, text: entry")
-        td
-          div(class="glyphicon glyphicon-remove", data-bind="click: $parent.removeCell.bind($data, 'project', $parent)")
+        tr
+          td
+            div(class="glyphicon glyphicon-ok", data-bind="click: $parent.toggleStatus")
+          td
+            div(data-bind="css: status, text: entry, click: edit, visible: !selected()")
+            input(type="text", data-bind="value: entry, event: { keyup: editText }, visible: selected, hasFocus: selected")
+          td
+            div(class="glyphicon glyphicon-remove", data-bind="click: $parent.removeCell.bind($data, 'project', $parent)")
+
   div(class="tools")

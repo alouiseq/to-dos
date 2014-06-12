@@ -15,6 +15,27 @@ function TableRow (counter, priority, entry_type, entry, status) {
   this.term = entry_type;
   this.entry = ko.observable(entry);
   this.status = ko.observable(status);
+  this.selected = ko.observable(false);
+
+  // make entry text editable
+  this.edit = function() {
+    this.selected(true);
+  };
+  // update entry from database 
+  this.editText = function(data, event) {
+    if (event.which === 13) {
+      this.selected(false);
+      console.log("text is " + this.entry() + ' and id is ' + this._id);
+      $.get('/textEdit/' + this.entry() + '/' + this._id, function(response) {
+        if (response.msg !== null) {
+	  console.log('ERROR: ' + response.msg);
+	}
+	else {
+	  console.log('UPDATE SUCCESSFUL!');
+	}
+      });
+    }
+  };
 }
 
 function TasksViewModel() {
@@ -24,8 +45,12 @@ function TasksViewModel() {
       entry = '',
       entries = '',
       newstat = '',
-      data = {};
+      allowed_rank = 0,
+      data = {},
       json_data = {};
+
+  self.ranks = { daily: [], project: [] };
+  self.rlimits = { daily: 20, project: 10 };
   self.entry_daily = ko.observable("");
   self.entry_project = ko.observable("");
   self.status = ["incomplete", "completed", "removed"];
@@ -37,11 +62,16 @@ function TasksViewModel() {
   // Populate table
   self.populate = function(type) {
     $.getJSON('/entrylist', function(items) {
+      // Return filtered entry objects
+      console.log('items of type ' + typeof items);
       var entrylist = items.filter(function(item) {
           if (item.term === type) {
+	    self.ranks[type].push(item.rank);
             return item;
           }
       });
+      console.log(type + ' ranks: ' + self.ranks[type]);
+
       var sortedlist = entrylist.sort(function(a, b) {
         if (a.rank < b.rank) {
 	  return -1;
@@ -49,8 +79,8 @@ function TasksViewModel() {
         if (a.rank > b.rank) {
 	  return 1;
 	}
-        alert('Rank collision with ' + a.rank + ' and ' + b.rank + '...'
-        + 'Aborting now!');
+        alert('Rank collision with ' + a.rank + ' and ' + b.rank + '...' + 'Aborting now!');
+        
       });
       $.each(sortedlist, function(index, dbentry) {
           var data = new TableRow(dbentry._id, dbentry.rank, dbentry.term, dbentry.entry, dbentry.status);
@@ -67,11 +97,25 @@ function TasksViewModel() {
     if(event.which == 13) {   // enter key
       entry = 'entry_' + type;
       entries = type + '_entries';
-      data = new TableRow(counter[type], priority[type]++, type, mv[entry](), self.status[0]);
+     
+      // check if rank is already taken 
+      for (var i = 1; i <= self.rlimits[type]; i++) {
+	console.log('index: ' + self.ranks[type].indexOf(i));
+	if (self.ranks[type].indexOf(i) === -1) {
+	  allowed_rank = i;
+	  console.log("I'm here");
+	  break;
+	}
+      }
+      if (!allowed_rank) {
+	allowed_rank = priority[type]++;
+      }
+
+      data = new TableRow(counter[type], allowed_rank, type, mv[entry](), self.status[0]);
+      allowed_rank = 0;
       counter[type] = counter[type] + 2;
       self.table[entries].push(data);
       json_data = ko.toJSON(data);  
-      //var parsed = JSON.parse(json_data);
       $.post('/addentry', json_data, function(response) {
         if (response.msg !== '') {
           alert('Add Error: ' + response.msg);

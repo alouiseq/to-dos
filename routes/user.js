@@ -122,3 +122,26 @@ app.get('/updateEntry/:id/:stat', function(req, res) {
   );
 }); 
 
+// Update the entry's text
+app.get('/textEdit/:text/:id', function(req, res) {
+  var db = req.db,
+      value = req.params.text,
+      identity = JSON.parse(req.params.id);
+
+  console.log("text is " + value + ' and id is ' + identity);
+  db.collection('entries').updateById(
+    identity,
+    { 
+      $set: { entry: value } 
+    },  
+    function(err, result) {
+      if (err) {
+	res.send({msg: JSON.stringify(err)});
+      }
+      else {
+	res.send({msg: null});
+      }
+    }  
+  );
+});
+
