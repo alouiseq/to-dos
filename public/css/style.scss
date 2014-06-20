@@ -1,0 +1,50 @@
+// HTML5 elements for non-supported browsers 
+header, footer, section, article, aside, nav, hgroup {
+  display: block;
+}
+
+body {
+  max-width: 1200px;
+  margin: 0px auto;
+}
+
+h1 {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.row {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+#table_daily {
+  float: left;
+}
+
+#table_proj {
+  float: right;
+}
+
+.completed {
+  text-decoration: line-through;
+}
+
+td:last-child {
+  text-align: right;
+}
+
+.tools {
+}
+
+footer {
+  position: absolute;
+  left: 50%;
+  bottom: 0px;
+}
+
+footer {
+  div {
+    margin-left: -50%;
+  }
+}

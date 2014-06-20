@@ -9,7 +9,7 @@
   "dependencies": {
     "jquery": "~2.1.1",
     "bootstrap-sass-official": "~3.1.1+2",
-    "bootstrap": "~3.1.1",
-    "jquery-ui": "~1.10.4"
+    "jquery-ui": "~1.10.4",
+    "knockoutjs": "~3.1.0"
   }
 }

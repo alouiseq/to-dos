@@ -46,6 +46,22 @@ module.exports = function (grunt) {
         options: {
           livereload: reloadPort
         }
+      },
+      sass: {
+        files: 'public/css/style.scss',
+        tasks: ['sass:style']
+      }
+    },
+    sass: {
+      style: {
+								files: {
+									'public/css/style.css' : 'public/css/style.scss'
+								}
+      },
+      bootstrap: {
+					   files: {
+							   'public/css/bootstrap.css' : 'public/css/bootstrap.scss'
+					   }
       }
     }
   });
@@ -68,6 +84,8 @@ module.exports = function (grunt) {
         });
     }, 500);
   });
+
+//  grunt.registerTask('build', []);
 
   grunt.registerTask('default', ['develop', 'watch']);
 };

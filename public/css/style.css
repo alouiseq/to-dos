@@ -1,35 +1,34 @@
-html {
-  height: 100%;
-  pading: 10px;
-}
+header, footer, section, article, aside, nav, hgroup {
+  display: block; }
+
+body {
+  max-width: 1200px;
+  margin: 0px auto; }
+
+h1 {
+  font-family: sans-serif;
+  text-align: center; }
+
+.row {
+  margin-left: 20px;
+  margin-right: 20px; }
 
 #table_daily {
-  width: 40%;
-  margin-left: 10px;
-  float: left;
-}
+  float: left; }
 
 #table_proj {
-  width: 40%;
-  margin-right: 10px;
-  float: right;
-}
+  float: right; }
 
 .completed {
-  text-decoration: line-through;
-}
+  text-decoration: line-through; }
 
 td:last-child {
-  text-align: right;
-}
+  text-align: right; }
 
-h1, h2 {
-  text-align: center;
-}
-
-.tools {
-  width: 100%;
-  margin: 0 10px;
+footer {
   position: absolute;
-  bottom: 0%;
-}
+  left: 50%;
+  bottom: 0px; }
+
+footer div {
+  margin-left: -50%; }

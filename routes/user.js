@@ -66,17 +66,11 @@ app.post('/addsorted', function(req, res) {
     }
     // Update all items' ranks after sort
     db.collection('entries').update({ $and: [{ _id: { $mod: [ 2, remainder ]}}, { rank : condition1 }, { rank : condition2 }]}, { $inc: { rank: dir_increment  }}, { multi : true }, function(err, result) {
-      console.log('term: ' + term);
-      console.log('item_id: ' + item._id);
-      console.log('rank: ' + dbitem_rank);
-      console.log('pos: ' + pos);
-      console.log('direction: ' + dir_increment);
       if (err) {
 	res.send('ERROR updating all ranks: ' + JSON.stringify(err));
       }
       // Update sorted/dragged entry's final rank
       db.collection('entries').update({ _id : item._id }, { $set: { rank: pos } }, function(err, result) {
-	console.log('UPDATED ENTRY');
 	if (err) {
 	  res.send('updating dragged item rank: ' + JSON.stringify(err));
 	}
@@ -86,16 +80,38 @@ app.post('/addsorted', function(req, res) {
 });
 
 // Remove entry from list
-app.delete('/deleteEntry/:id', function(req, res) {
-    var db = req.db;
-    var entry_id = JSON.parse(req.params.id);
+app.delete('/deleteEntry/:id/:rank/:term', function(req, res) {
+    var db = req.db,
+        entry_id = JSON.parse(req.params.id),
+        entry_rank = JSON.parse(req.params.rank),
+        entry_term = req.params.term,
+        remainder;
+
+    if (entry_term === 'daily') {
+      remainder = 0;   // even numbered ids
+    }
+    else if (entry_term === 'project') {
+      remainder = 1;   // odd numbered ids
+    }
+    else {
+      console.log('term is not recognized...');
+    } 
+
 
     db.collection('entries').remove({_id: entry_id}, function(err, nresult) {
-      if(nresult === 1) {
-        res.send({msg: ''});
+      if(nresult !== 1) {
+        res.send({msg: JSON.stringify(err)});
       }
       else {
-        res.send({msg: err});
+	// adjust ranks of lowered ranked entries
+	db.collection('entries').update({ $and: [{ _id: { $mod: [ 2, remainder ]}}, { rank: { $gt: entry_rank }}]}, { $inc: { rank: -1 }}, { multi: true }, function(err, result) {
+	  if (err) {
+	    res.send({ msg: JSON.stringify(err) });
+	  }
+	  else {
+            res.send({msg: ''});
+	  }
+	});
       }
     });
 });
