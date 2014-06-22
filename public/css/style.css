@@ -14,7 +14,8 @@ header, footer, section, article, aside, nav, hgroup {
 .list {
   -webkit-flex-grow: 1;
   -moz-flex-grow: 1;
-  -ms-flex-grow: 1; }
+  -ms-flex-grow: 1;
+  min-width: 50%; }
 
 body {
   max-width: 1200px;

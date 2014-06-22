@@ -25,13 +25,17 @@ function TableRow (counter, priority, entry_type, entry, status) {
   this.editText = function(data, event) {
     if (event.which === 13) {
       this.selected(false);
-      $.put('/textEdit/' + this.entry() + '/' + this._id, function(response) {
-        if (response.msg !== null) {
-	  console.log('ERROR: ' + response.msg);
-	}
-	else {
-	  console.log('UPDATE SUCCESSFUL!');
-	}
+      $.ajax({
+        url: '/textEdit/' + this.entry() + '/' + this._id,
+	type: 'PUT',
+	success: function(response) {
+	  if (response.msg !== null) {
+	    console.log('ERROR: ' + response.msg);
+	  }
+	  else {
+	    console.log('UPDATE SUCCESSFUL!');
+	  }
+        }
       });
     }
   };
@@ -166,10 +170,14 @@ function TasksViewModel() {
       newstat = self.status[0];
     }
     entry.status(newstat);
-    $.put('/updateEntry/' + entry._id + '/' + newstat, function(response) {
+    $.ajax({
+      url: '/updateEntry/' + entry._id + '/' + newstat,
+      type: 'PUT',
+      success: function(response) {
         if(response.msg !== '') {
           alert('Update Error: ' + response.msg);
         }
+      }
     });
   };
 

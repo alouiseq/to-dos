@@ -31,6 +31,7 @@ header, footer, section, article, aside, nav, hgroup {
 
 .list {
   @include expand(1);
+  min-width: 50%;
 }
 
 body {
