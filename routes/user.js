@@ -117,7 +117,7 @@ app.delete('/deleteEntry/:id/:rank/:term', function(req, res) {
 });
 
 // Update state of entry
-app.get('/updateEntry/:id/:stat', function(req, res) {
+app.put('/updateEntry/:id/:stat', function(req, res) {
   var db = req.db,
       entry_id = JSON.parse(req.params.id),
       new_status = req.params.stat;
@@ -139,7 +139,7 @@ app.get('/updateEntry/:id/:stat', function(req, res) {
 }); 
 
 // Update the entry's text
-app.get('/textEdit/:text/:id', function(req, res) {
+app.put('/textEdit/:text/:id', function(req, res) {
   var db = req.db,
       value = req.params.text,
       identity = JSON.parse(req.params.id);

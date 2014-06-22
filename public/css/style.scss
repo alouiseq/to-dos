@@ -3,27 +3,45 @@ header, footer, section, article, aside, nav, hgroup {
   display: block;
 }
 
+.wrapper {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+}
+
+// flex direction
+@mixin direction($dir) {
+  -webkit-flex-direction: $dir;
+  -moz-flex-direction: $dir;
+  -ms-flex-direction: $dir;
+}
+
+@media (max-width: 767px) {
+  .wrapper {
+    @include direction(column);
+  } 
+}
+
+// flex grow
+@mixin expand($ratio) {
+  -webkit-flex-grow: $ratio;
+  -moz-flex-grow: $ratio;
+  -ms-flex-grow: $ratio;
+}
+
+.list {
+  @include expand(1);
+}
+
 body {
   max-width: 1200px;
   margin: 0px auto;
+  padding: 0px 20px;
 }
 
 h1 {
-  font-family: sans-serif;
+  font-family: cursive, sans-serif;
   text-align: center;
-}
-
-.row {
-  margin-left: 20px;
-  margin-right: 20px;
-}
-
-#table_daily {
-  float: left;
-}
-
-#table_proj {
-  float: right;
 }
 
 .completed {
@@ -32,9 +50,6 @@ h1 {
 
 td:last-child {
   text-align: right;
-}
-
-.tools {
 }
 
 footer {

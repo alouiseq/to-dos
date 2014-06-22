@@ -3,5 +3,7 @@
 *.swn
 .git
 .gitignore
+node_modules/
+public/components/
 data/**
 .sass-cache

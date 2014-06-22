@@ -54,16 +54,67 @@ module.exports = function (grunt) {
     },
     sass: {
       style: {
-								files: {
-									'public/css/style.css' : 'public/css/style.scss'
-								}
+        files: {
+          'public/css/style.css' : 'public/css/style.scss'
+        }
       },
       bootstrap: {
-					   files: {
-							   'public/css/bootstrap.css' : 'public/css/bootstrap.scss'
-					   }
+        files: {
+          'public/css/bootstrap.css' : 'public/css/bootstrap.scss'
+        }
+      }
+    },
+    copy: {
+      glyphs: {
+        files: [{
+	  expand: true,
+	  cwd: 'public/css/bootstrap/',
+          src: ['*'],
+	  dest: 'dist/styles/bootstrap/'
+	}]
+      }
+    },
+    jadeUsemin: {
+      scripts: {
+        options: {
+	  tasks: {
+	    js: ['uglify']
+	  }
+	},
+	files: [{ src: 'views/layout.jade' }]
+      },
+      styles: {
+        options: {
+	  tasks: {
+	    css: ['concat', 'cssmin']
+	  }
+	},
+	files: [{ src: 'views/layout.jade' }]
       }
     }
+    // Usemin is used instead
+/*
+    concat: {
+      css: {
+        src: ['public/css/bootstrap.css', 'public/css/style.css'],
+        dest: 'tmp/styles/main.css'
+      }
+    },
+    uglify: {
+      myjs: {
+        files: {
+          'dist/scripts/todos.min.js' : 'public/js/todos.js'
+        }
+      }
+    },
+    cssmin: {
+      combine: {
+        files: {
+          'dist/styles/main.min.css' : 'tmp/styles/main.css',
+        }
+      }
+    }
+*/
   });
 
   grunt.config.requires('watch.server.files');
@@ -85,7 +136,7 @@ module.exports = function (grunt) {
     }, 500);
   });
 
-//  grunt.registerTask('build', []);
+  grunt.registerTask('build', ['jadeUsemin', 'copy']);
 
   grunt.registerTask('default', ['develop', 'watch']);
 };

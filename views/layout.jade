@@ -3,15 +3,24 @@ html(lang='en')
   head
     title= title
     meta(charset='utf-8')
-    link(rel='icon', href='/img/todos.jpeg')
-    link(rel='stylesheet', href='/css/bootstrap.css')
-    link(rel='stylesheet', href='/css/style.css')
+    link(rel='icon', href='public/img/todos.jpeg')
+    if settings.env === 'development'
+      //-<!-- build:css dist/styles/main.min.css -->
+      link(rel='stylesheet', href='public/css/bootstrap.css')
+      link(rel='stylesheet', href='public/css/style.css')
+      //-<!-- endbuild -->
+    else
+      link(rel='stylesheet', href='dist/styles/main.min.css')
     script(src='http://localhost:35729/livereload.js')
   body
     block content
-    script(src='/components/jquery/dist/jquery.js')
-    script(src='/components/jquery-ui/ui/jquery-ui.js')
-    script(src='/components/jquery-ui/ui/jquery.ui.sortable.js')
-    script(src='/components/knockoutjs/dist/knockout.js')
-    script(src='/js/todos.js')
-
+    script(src='public/components/jquery/dist/jquery.min.js')
+    script(src='public/components/jquery-ui/ui/minified/jquery-ui.min.js')
+    script(src='public/components/jquery-ui/ui/minified/jquery.ui.sortable.min.js')
+    script(src='public/components/knockoutjs/dist/knockout.js')
+    if settings.env === 'development'
+      //-<!-- build:js dist/scripts/todos.min.js -->
+      script(src='public/js/todos.js')
+      //-<!-- endbuild -->
+    else
+      script(src='dist/scripts/todos.min.js')

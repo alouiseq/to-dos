@@ -25,7 +25,7 @@ function TableRow (counter, priority, entry_type, entry, status) {
   this.editText = function(data, event) {
     if (event.which === 13) {
       this.selected(false);
-      $.get('/textEdit/' + this.entry() + '/' + this._id, function(response) {
+      $.put('/textEdit/' + this.entry() + '/' + this._id, function(response) {
         if (response.msg !== null) {
 	  console.log('ERROR: ' + response.msg);
 	}
@@ -166,7 +166,7 @@ function TasksViewModel() {
       newstat = self.status[0];
     }
     entry.status(newstat);
-    $.get('/updateEntry/' + entry._id + '/' + newstat, function(response) {
+    $.put('/updateEntry/' + entry._id + '/' + newstat, function(response) {
         if(response.msg !== '') {
           alert('Update Error: ' + response.msg);
         }
