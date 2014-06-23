@@ -4,15 +4,15 @@ header, footer, section, article, aside, nav, hgroup {
 }
 
 .wrapper {
+  display: flex;
   display: -webkit-flex;
-  display: -moz-flex;
   display: -ms-flex;
 }
 
 // flex direction
 @mixin direction($dir) {
+  flex-direction: $dir;
   -webkit-flex-direction: $dir;
-  -moz-flex-direction: $dir;
   -ms-flex-direction: $dir;
 }
 
@@ -24,8 +24,8 @@ header, footer, section, article, aside, nav, hgroup {
 
 // flex grow
 @mixin expand($ratio) {
+  flex-grow: $ratio;
   -webkit-flex-grow: $ratio;
-  -moz-flex-grow: $ratio;
   -ms-flex-grow: $ratio;
 }
 
@@ -47,6 +47,7 @@ h1 {
 
 .completed {
   text-decoration: line-through;
+  -moz-text-decoration-color: red;
 }
 
 td:last-child {

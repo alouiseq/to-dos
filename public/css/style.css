@@ -2,18 +2,18 @@ header, footer, section, article, aside, nav, hgroup {
   display: block; }
 
 .wrapper {
+  display: flex;
   display: -webkit-flex;
-  display: -moz-flex;
   display: -ms-flex; }
 
 @media (max-width: 767px) {
   .wrapper {
+    flex-direction: column;
     -webkit-flex-direction: column;
-    -moz-flex-direction: column;
     -ms-flex-direction: column; } }
 .list {
+  flex-grow: 1;
   -webkit-flex-grow: 1;
-  -moz-flex-grow: 1;
   -ms-flex-grow: 1;
   min-width: 50%; }
 
@@ -27,7 +27,8 @@ h1 {
   text-align: center; }
 
 .completed {
-  text-decoration: line-through; }
+  text-decoration: line-through;
+  -moz-text-decoration-color: red; }
 
 td:last-child {
   text-align: right; }
